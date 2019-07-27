@@ -17,26 +17,26 @@
 ## 部分截图
 1、后台主页面
 
-![image](https://github.com/h837272998/ThinkPHP5/blob/master/public/1.png)
+![image](https://github.com/h837272998/ThinkPHP5-ClassRoom/blob/master/public/1.png)
 
 2、课表管理
 
-![image](https://github.com/h837272998/ThinkPHP5/blob/master/public/2.png)
+![image](https://github.com/h837272998/ThinkPHP5-ClassRoom/blob/master/public/2.png)
 
 3、课表获取
 
-![image](https://github.com/h837272998/ThinkPHP5/blob/master/public/3.png)
+![image](https://github.com/h837272998/ThinkPHP5-ClassRoom/blob/master/public/3.png)
 
-![image](https://github.com/h837272998/ThinkPHP5/blob/master/public/4.png)
+![image](https://github.com/h837272998/ThinkPHP5-ClassRoom/blob/master/public/4.png)
 
-![image](https://github.com/h837272998/ThinkPHP5/blob/master/public/5.png)
+![image](https://github.com/h837272998/ThinkPHP5-ClassRoom/blob/master/public/5.png)
 
 4、个人教务网绑定
 
-![image](https://github.com/h837272998/ThinkPHP5/blob/master/public/6.png)
+![image](https://github.com/h837272998/ThinkPHP5-ClassRoom/blob/master/public/6.png)
 
 5、教室申请
 
-![image](https://github.com/h837272998/ThinkPHP5/blob/master/public/7.png)
+![image](https://github.com/h837272998/ThinkPHP5-ClassRoom/blob/master/public/7.png)
 
 
