@@ -1,0 +1,115 @@
+{include file="public/header" /}  <!--头文件-->
+<title>添加教学楼</title>
+</head>
+	<body>
+		<article class="page-container">
+			<form action="" class="form form-horizontal" id="form-building-add" method="post">
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>ID：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="" id="buildid" name="buildid">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>教学楼名：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="输入教学楼名" id="buildname" name="buildname">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>所在校区：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="输入教学楼所在校区" id="block" name="block">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>课室数量：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="输入教学楼开放的课室数量" id="roomnumber" name="roomnumber">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">别名：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="习惯用名" id="alias" name="alias">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">状态：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="1:开放，0:未开放；默认：0" id="status" name="status">
+					</div>
+				</div>
+				<div class="row cl">
+					<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+						<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+					</div>
+				</div>
+			</form>
+		</article>
+	
+{include file="public/footer" /}
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+	<script type="text/javascript"> 
+	$(function(){
+		$("#form-building-add").validate({
+			rules:{
+				buildid:{
+					required:true,
+					minlength:2,
+					maxlength:16
+				},
+				buildname:{
+					required:true,
+					minlength:2,
+					maxlength:16
+				},
+				block:{
+					required:true,
+					minlength:2,
+					maxlength:16
+				},
+				roomnumber:{
+					required:true,
+					range:[1,999],
+				},
+				alias:{
+					minlength:1,
+					maxlength:16
+				},
+				status:{
+					range:[0,1]
+				}
+			},
+			onkeyup:false,
+			focusCleanup:true,
+			success:"valid",
+			submitHandler:function(form){
+				$.ajax({
+					type:"POST",
+					url:"{:url('Building/save')}",
+					data:$('#form-building-add').serialize(),
+					success:function(data){
+						if(data.code!=0){
+							parent.layer.msg('添加成功!',{icon:1,time:1000});
+							setTimeout(function(){
+//								var index = parent.layer.getFrameIndex(window.name);
+//								parent.layer.close(index);
+								parent.location.reload();
+							},500);
+						}else{
+							alert(data.msg);
+						}
+					},
+					error:function(){
+						alert('error');
+					}
+				});
+			}
+		});
+	});
+	</script> 
+	</body>
+</html>

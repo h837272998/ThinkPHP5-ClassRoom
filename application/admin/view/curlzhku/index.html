@@ -1,0 +1,129 @@
+{include file="public/header" /}
+<title>教务网爬取</title>
+<style type="text/css">
+	.mt-20{
+		padding: 20px 20px 20px 20px;
+		margin: 20px 20px 20px 20px;
+	}
+	div{
+		line-height: 50px;
+	}
+</style>
+</head>
+<body>
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 课表获取 <span class="c-gray en">&gt;</span> 教务网爬取 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="page-container">
+		<h4><span class="c-green">Tir:</span>从教务网爬取所有课表信息；需要两个步骤，并输入两次正确的验证码。爬取成功后会将爬取到的资料存于存在的教室的课表信息，不存在则忽略</h4>
+		<p class="c-red">Tir：<span id="tir">选择学期->获取验证码</span></p>
+	</div>
+	<form id="myForm" class="form-horizontal form" method="post">
+	<div class="mt-20 bg-1 bk-gray cl">
+		<div class="row cl page-body form-group">
+			<label class="form-label col-xs-2 ">选择学期：</label>
+			<div class="col-xs-2">
+				<select  class="select form-control" name="Sel_XNXQ">
+					<option value="20181">2018-2019第二学期</option>
+					<option value="20180">2018-2019第一学期</option>
+					<option value="20171">2017-2018第二学期</option>
+					<option value="20170">2017-2018第一学期</option>
+				</select>
+			</div>
+			<label class="form-label col-xs-2">选择校区：</label>
+			<div class="col-xs-2">
+				<select  class="select form-control" name="Sel_XQ">
+					<option value="3">白云校区</option>
+				</select>
+			</div>
+			<label class="form-label col-xs-2">选择教学楼：</label>
+			<div class="col-xs-2">
+				<select  class="select form-control" name="Sel_JXL" id="Sel_JXL">
+
+				</select>
+			</div>
+			<div class="col-xs-2"></div>
+			<div class="col-xs-6">
+				<!--{:url('api/curl/getvalidata')}-->
+				<label class="form-label col-xs-4 form-control" for="txt_yzm">验证码：</label>
+				<div class="col-xs-4 "><input type="text" value="" placeholder="输入验证码" id="txt_yzm" name="txt_yzm" class="input-text form-control"/></div>
+				<div class="col-xs-4 " id="im"><img src="" height="30px" onclick="changeValidata(this)" alt="加载图像失败，查看教务网" title="点击图像重新加载验证码！" class="form-control"/></div>
+			</div>
+			<div class="col-xs-1">
+				<input type="button" class="btn btn-success form-control" onclick="getZHKU1()" value="爬取一" />
+			</div>
+			<div class="col-xs-1">
+				<input type="button" class="btn btn-success disabled form-control" value="爬取二" />
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="mt-20 bg-1 bk-gray cl">
+		<div>
+			<div class="col-xs-6"><label for="name" >爬取框:</label></div>
+			<div class="col-xs-6"><label for="name" > Sql存储框:</label></div>
+		</div>
+		<div id="" class="col-xs-6 ">
+			<table  class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+			<thead>
+				<tr class="text-c">
+					<th width="80">序号</th>
+					<th width="80">周次</th>
+					<th width="80">节次</th>
+					<th width="80">地点</th>
+					<th width="80">备注</th>
+				</tr>
+			</thead>
+			<tbody id="table1">
+				
+			</tbody>
+			</table>
+		</div>
+		<div id="" class="col-xs-6">
+			<table  class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+			<thead>
+				<tr class="text-c">
+					<th width="60">课室</th>
+					<th width="80">教学楼</th>
+					<th width="60">周次</th>
+					<th width="60">日期</th>
+					<th width="60">节次</th>
+					<th>备注</th>
+				</tr>
+			</thead>
+			<tbody id="table2">
+				
+			</tbody>
+			</table>
+		</div>
+	</div>
+{include file="public/footer" /}  <!--尾部文件-->
+	<script type="text/javascript" src="__HUISTATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+	<script type="text/javascript" src="__HUISTATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+	<script type="text/javascript" src="__HUISTATIC__/lib/laypage/1.2/laypage.js"></script>
+<script>
+	$(function(){
+		$.get('{:url('Curlzhku/getBuilding')}',function(result){
+			$('#Sel_JXL').html(result);
+		})
+	});
+	$('.table-sort').dataTable({
+			"aaSorting": [[ 1, "desc" ]],//默认第几个排序
+			"bStateSave": true,//状态保存
+			"pading":false,
+			"aoColumnDefs": [
+			  //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+			  {"orderable":false,"aTargets":[3]}// 不参与排序的列  0 和7
+			]
+	});
+	
+	function getZHKU1(){
+		$.post('{:url('api/Curl/getSyllabusForZHKU')}',$('#myForm').serialize(),function(result){
+			$('#table1').appendTo(result.curlhtml);
+			$('#table2').appendTo(result.sqlhtml);
+		},JSON);
+	}
+	function changeValidata(obj){
+		obj.src = "{:url('api/curl/getvalidata')}";
+	}
+</script>
+</body>
+</html>

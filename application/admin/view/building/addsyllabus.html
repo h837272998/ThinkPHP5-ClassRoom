@@ -1,0 +1,178 @@
+{include file="public/header" /}  <!--头文件-->
+<link href="__STATIC__/jquery/chosen_v1.8.7/chosen.min.css" type="text/css" rel="stylesheet" />
+<!--<link rel="stylesheet" href="../../../../public/H-ui.admin/lib/Hui-iconfont/1.0.8/iconfont.css" />-->
+<title>添加课室课表</title>
+</head>
+	<body>
+		<article class="page-container">
+			<form action="" class="form form-horizontal" id="form-syllabus-add" method="post">
+				
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>所属教学楼：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+					<select name="buildid"  class="select cid_select" id="buildid" required>
+						<option value="">--请选择--</option>
+						{volist name='building' id='vo'}
+							<option value="{$vo.buildid}">{$vo.buildname}</option>
+						{/volist}
+					</select>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>所属教室：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<select name="roomid"  class="select chosen_select" id="roomid" tabindex="-1" multiple>
+						</select>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>时间：</label>
+					<div class="formControls col-xs-8 col-sm-9 pull-left">
+						<div class="col-xs-4 col-sm-3 ">
+							<select name="week"  class="select cs_select" id="week">
+								<option value="">--周数--</option>
+								{for start='1' end='24'}
+									<option value="{$i}">&nbsp;&nbsp;&nbsp;{$i}周</option>
+								{/for}
+							</select>
+						</div>
+						<div class="col-xs-4 col-sm-3">
+							<select name="day"  class="select cs_select" id="day">
+								<option value="">--星期--</option>
+								{for start='1' end='8'}
+									<option value="{$i}">&nbsp;&nbsp;&nbsp;{$i|week}</option>
+								{/for}
+							</select>
+						</div>
+						<div class="col-xs-4 col-sm-3">
+							<select name="section"  class="select cs_select" id="section">
+								<option value="">--节次--</option>
+								{for start='1' end='7'}
+									<option value="{$i}">&nbsp;&nbsp;&nbsp;{$i|section}</option>
+								{/for}
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>状态：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<select name="status"  class="select cs_select" id="status" >
+							<option value="1">无课</option>
+							<option value="2">有课</option>
+						</select>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">备注：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="备注" id="remarks" name="remarks">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"></label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<label id="tir" class="c-red"></label>
+					</div>
+				</div>
+				<div class="row cl">
+					<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+						<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提&nbsp;交&nbsp;&nbsp;">
+					</div>
+				</div>
+			</form>
+		</article>
+	
+{include file="public/footer" /}
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/jquery/chosen_v1.8.7/chosen.jquery.min.js"></script>
+	<script type="text/javascript"> 
+	
+	$(function(){
+		/**
+		 * 初始化 多选框和单选框 chosen
+		 */
+		$(".cid_select").chosen({no_results_text: "没有相关数据",inherit_select_classes:true});
+		$(".cs_select").chosen({no_results_text: "没有相关数据",});
+		$('.chosen_select').chosen({no_results_text:"--没有相关数据--",placeholder_text_multiple:'--可多选--'});
+		url = SCOPE.room_url;
+		/**
+		 * 异步获得多选框
+		 */
+		$('.cid_select').change(function(){
+			$.post(url,{date:$('.cid_select').val()},function(data){
+				var html ='';
+				for (var i = 0; i < data.data.length; i++) {
+                       html+='<option value="'+data.data[i].roomid+'">'+data.data[i].roomid+'</option>';
+                   }
+				$(".chosen_select").empty();
+               $(".chosen_select").append(html);
+               $(".chosen_select").trigger("chosen:updated"); 
+			},'json');
+
+		});
+		/**
+		 * jquery validata  and post
+		 */
+
+		$("#form-syllabus-add").validate({
+			rules:{
+				buildid:{
+					required:true,
+				},
+				roomid:{
+					required:true,
+				},
+				week:{
+					required:true,
+				},
+				day:{
+					required:true,
+				},
+				section:{
+					required:true,
+				},
+				remarks:{
+					maxlength:20
+				},
+			},
+			messages:{
+				buildid:'请选择教学楼',
+				roomid:'至少选择一个课室',
+				week:'选择完整的时间',
+				day:'选择完整的时间',
+				section:'选择完整的时间',
+				remarks:{maxlength:'最多20个字符',},
+			},
+			errorLabelContainer:"#tir",
+			ignore: ":hidden:not(select)",
+			onkeyup:false,
+			focusCleanup:true,
+			success:"valid",
+			submitHandler:function(form){
+				$.ajax({
+					type:"POST",
+					url:"{:url('Building/saveSyllabus')}",
+					data:$('#form-syllabus-add').serialize(),
+					success:function(data){
+						if(data.code!=0){
+							parent.layer.msg('添加成功!',{icon:1,time:1000});
+							setTimeout(function(){
+								parent.location.reload();
+							},500);
+						}else{
+							alert(data.msg);
+						}
+					},
+					error:function(){
+						alert('error');
+					}
+				});
+			}
+		});
+	});
+	</script>
+	</body>
+</html>

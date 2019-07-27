@@ -1,0 +1,106 @@
+{include file="public/header" /}  <!--头文件-->
+<title>编辑教学楼</title>
+</head>
+	<body>
+		<article class="page-container">
+			<form action="" class="form form-horizontal" id="form-room-add" method="post">
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>ID：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text disabled" " value="{$room.roomid}" placeholder="" id="roomid" name="roomid" readonly="readonly">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>所属教学楼：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+					<select name="buildid" class="input-text disabled" onfocus="this.defaultIndex=this.selectedIndex;"
+onchange="this.selectedIndex=this.defaultIndex;">
+						{volist name='building' id='vo'}
+							<option value="{$vo.buildid}">{$vo.buildname}</option>
+						{/volist}
+					</select>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>最大人数：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{$room.maxpeople}" placeholder="该课室最大容量" id="maxpeople" name="maxpeople">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">状态：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{$room.status}" placeholder="1:开放，0:未开放；默认：0" id="status" name="status">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">备注：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{$room.remarks}" placeholder="备注" id="remarks" name="remarks">
+					</div>
+				</div>
+				<div class="row cl">
+					<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+						<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交修改&nbsp;&nbsp;">
+					</div>
+				</div>
+			</form>
+		</article>
+	
+{include file="public/footer" /}
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+	<script type="text/javascript"> 
+	$(function(){
+		$("#form-room-add").validate({
+			rules:{
+				roomid:{
+					required:true,
+					minlength:2,
+					maxlength:10
+				},
+				buildname:{
+					required:true,
+				},
+				maxpeople:{
+					required:true,
+					minlength:2,
+					maxlength:16
+				},
+				status:{
+					range:[0,1]
+				},
+				remarks:{
+					maxlength:20
+				}
+			},
+			onkeyup:false,
+			focusCleanup:true,
+			success:"valid",
+			submitHandler:function(form){
+				$.ajax({
+					type:"POST",
+					url:"{:url('Building/updateroom')}",
+					data:$('#form-room-add').serialize(),
+					dataType:'json',
+					success:function(data){
+						if(data.code!=0){
+							parent.layer.msg('修改成功!',{icon:1,time:1000});
+							setTimeout(function(){
+								parent.location.reload();
+							},500);
+						}else{
+							alert(data.msg);
+						}
+					},
+					error:function(){
+						alert('error');
+					}
+				});
+			}
+		});
+	});
+	</script> 
+	</body>
+</html>

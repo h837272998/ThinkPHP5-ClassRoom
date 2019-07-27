@@ -1,0 +1,95 @@
+{include file="public/header" /}  <!--头文件-->
+
+<title>修改密码</title>
+</head>
+	<body>
+		<article class="page-container">
+			<form action="" class="form form-horizontal" id="form-psw-change" method="post">
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>旧密码：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="password" class="input-text" value="" placeholder="" id="oldpsw" name="oldpsw">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>新的密码：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="password" class="input-text" value="" placeholder="" id="onepsw" name="onepsw">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="password" class="input-text" value="" placeholder="再次输入密码" id="twopsw" name="twopsw">
+					</div>
+				</div>
+				<div class="row cl hidden" id="myhidden">
+					<label class="form-label col-xs-4 col-sm-3"></label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<span class="c-red" id="tir"></span>
+					</div>
+				</div>
+				<div class="row cl">
+					<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+						<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提&nbsp;交&nbsp;&nbsp;">
+					</div>
+				</div>
+			</form>
+		</article>
+{include file="public/footer" /}
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="__HUISTATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+	<script type="text/javascript"> 
+	$(function(){
+		$("#form-psw-change").validate({
+			rules:{
+				oldpsw:{
+					required:true,
+					minlength:6,
+					maxlength:60
+				},
+				onepsw:{
+					required:true,
+					minlength:6,
+					maxlength:60
+				},
+				twopsw:{
+					required:true,
+					minlength:6,
+					maxlength:60,
+					equalTo:"#onepsw"
+				}
+			},
+			onkeyup:false,
+			focusCleanup:true,
+			success:"valid",
+			submitHandler:function(form){
+				$.ajax({
+					type:"POST",
+					url:"{:url('User/changepsw_post')}",
+					data:$('#form-psw-change').serialize(),
+					success:function(data){
+						if(data.code!=0){
+							parent.layer.msg('修改成功!',{icon:1,time:1000});
+							setTimeout(function(){
+								parent.location.reload();
+							},500);
+						}else{
+							$('#tir').html(data.msg);
+							$('#myhidden').removeClass("hidden");
+							setTimeout(function(){
+								$('#myhidden').addClass("hidden");
+							},5000);
+						}
+					},
+					error:function(){
+						alert('error');
+					}
+				});
+			}
+		});
+	});
+	</script>
+	</body>
+</html>
